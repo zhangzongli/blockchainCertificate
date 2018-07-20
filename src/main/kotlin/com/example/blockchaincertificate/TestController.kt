@@ -5,14 +5,21 @@ import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.web3j.crypto.Credentials
+import org.web3j.crypto.RawTransaction
+import org.web3j.crypto.TransactionEncoder
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.admin.Admin
 import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.core.methods.request.Transaction
+import org.web3j.tx.Contract
 import org.web3j.utils.Convert
+import org.web3j.utils.Numeric
 import java.io.File
+import java.math.BigDecimal
+
+
 
 
 /**
@@ -47,23 +54,23 @@ class TestController {
     fun newaccount(): String? {
         val personalNewAccount = admin.personalNewAccount("123456")
         val send = personalNewAccount.sendAsync()
-        send.join()
+//        send.join()
         log.info(send.toString())
         return send.toString()
     }
 
     @RequestMapping("/loadWallet")
-    fun loadWallet() {
+    fun loadWallet(): Credentials? {
         val walleFilePath = "./UTC--2018-07-19T03-46-04.460000000Z--6194ab1ec4a1e67df89537ed913fc014e538b303.json"
         val passWord = "123456"
-        var credentials = WalletUtils.loadCredentials(passWord, walleFilePath)
+        val credentials = WalletUtils.loadCredentials(passWord, walleFilePath)
         val address = credentials.getAddress()
         val publicKey = credentials.getEcKeyPair().getPublicKey()
         val privateKey = credentials.getEcKeyPair().getPrivateKey()
         log.info("address=" + address)
         log.info("public key=" + publicKey)
         log.info("private key=" + privateKey)
-
+        return credentials
     }
 
     /***********查询指定地址的余额 */
@@ -79,22 +86,34 @@ class TestController {
 
     @RequestMapping("/transto")
     fun transto() {
-//        val send = Transfer.sendFunds(web3j, credentials, address_to, BigDecimal.ONE, Convert.Unit.FINNEY).send()
+        val address_to = "0x41F1dcbC0794BAD5e94c6881E7c04e4F98908a87"
+        val send = MyTransfer.sendFunds(web3j, loadWallet(), address_to, BigDecimal.ONE, Convert.Unit.FINNEY
+                , "0x7b2074696d653a20313531383933313435323537372c20747970653a2027696e666f272c206d73673a202757656233205465737421212127207d20")
+                .send()
 
+        log.info("Transaction complete:")
+        log.info("trans hash=" + send.transactionHash)
+        log.info("from :" + send.from)
+        log.info("to:" + send.to)
+        log.info("gas used=" + send.gasUsed)
+        log.info("status: " + send.status)
+
+    }
+
+    @RequestMapping("/transto2")
+    fun testTransto() {
         val ethGetTransactionCount = web3j.ethGetTransactionCount(
                 "0x6194ab1ec4a1e67df89537ed913fc014e538b303", DefaultBlockParameterName.LATEST).sendAsync().get()
         val nonce = ethGetTransactionCount.transactionCount
 
-        val personalUnlockAccount = admin.personalUnlockAccount("0x6194ab1ec4a1e67df89537ed913fc014e538b303", "123456").send()
-        if (personalUnlockAccount.accountUnlocked()) {
-            val transaction = Transaction.createFunctionCallTransaction("0x6194ab1ec4a1e67df89537ed913fc014e538b303",
-                    nonce, 1.toBigInteger(), 21000.toBigInteger(), "0x06Eb0870C6957A2bD3b7FDEdb87d919eEE32BD2c"
-                    , "0x7b2074696d653a20313531383933313435323537372c20747970653a2027696e666f272c206d73673a202757656233205465737421212127207d20")
-
-
-            val send = admin.ethSendTransaction(transaction).send()
-            log.info(send.transactionHash)
-        }
+        val rawTransaction = RawTransaction.createTransaction(nonce, Contract.GAS_PRICE, Contract.GAS_LIMIT,
+                "0x06Eb0870C6957A2bD3b7FDEdb87d919eEE32BD2c",
+                10000.toBigInteger(),
+                "0x7b2074696d653a20313531383933313435323537372c20747970653a2027696e666f272c206d73673a202757656233205465737421212127207d20")
+        val signedMessage = TransactionEncoder.signMessage(rawTransaction, loadWallet())
+        val hexValue = Numeric.toHexString(signedMessage)
+        val send = web3j.ethSendRawTransaction(hexValue).send()
+        log.info(send.transactionHash)
 
     }
 
