@@ -20,8 +20,6 @@ import java.io.File
 import java.math.BigDecimal
 
 
-
-
 /**
  * Created by guo on 2018/7/18.
  * desc:
@@ -34,6 +32,8 @@ class TestController {
     private lateinit var web3j: Web3j
     @Autowired
     private lateinit var admin: Admin
+
+    private val contractAddress = "0x2dcbf84d7e11db9443a387504c253589bc0a538a"
 
     @RequestMapping("/test")
     fun test(): String? {
@@ -115,6 +115,21 @@ class TestController {
         val send = web3j.ethSendRawTransaction(hexValue).send()
         log.info(send.transactionHash)
 
+    }
+
+    @RequestMapping("/deploy")
+    fun deploy() {
+        val deploy = Ballot_sol_SimpleStorage.deploy(web3j, loadWallet(), Contract.GAS_PRICE, Contract.GAS_LIMIT).send()
+
+        log.info(deploy.contractAddress)
+        log.info(deploy.contractBinary)
+    }
+
+
+    @RequestMapping("/contract")
+    fun contract() {
+        val valid = Ballot_sol_SimpleStorage.load(contractAddress, web3j, loadWallet(), Contract.GAS_PRICE, Contract.GAS_LIMIT).isValid
+        log.info { valid }
     }
 
 }
