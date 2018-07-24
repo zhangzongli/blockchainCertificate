@@ -128,8 +128,11 @@ class TestController {
 
     @RequestMapping("/contract")
     fun contract() {
-        val valid = Ballot_sol_SimpleStorage.load(contractAddress, web3j, loadWallet(), Contract.GAS_PRICE, Contract.GAS_LIMIT).isValid
-        log.info { valid }
+        val contract = Ballot_sol_SimpleStorage.load(contractAddress, web3j, loadWallet(), Contract.GAS_PRICE, Contract.GAS_LIMIT)
+        log.info { contract.isValid }
+//        val set = contract.set(Uint256(100)).send()
+        val get = contract.get().send()
+        log.info { get }
     }
 
 }
