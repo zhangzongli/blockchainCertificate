@@ -18,6 +18,8 @@ apply plugin: 'kotlin-spring'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java-library'
+apply plugin: 'org.jetbrains.kotlin.jvm'
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -50,7 +52,8 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile ('org.web3j:web3j-spring-boot-starter:1.6.0')
 	compile("mysql:mysql-connector-java")
-	compile 'org.projectlombok:lombok:1.16.18'
+	compile 'org.projectlombok:lombok:1.18.2'
+//	kapt "org.projectlombok:lombok:1.18.2"
 	compile 'io.github.microutils:kotlin-logging:1.5.4'
 	compile 'com.squareup.retrofit2:retrofit:2.4.0'
 	compile 'com.squareup.retrofit2:converter-gson:2.4.0'
