@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.RawTransaction
@@ -20,6 +21,7 @@ import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
 import java.io.File
 import java.math.BigDecimal
+import java.math.BigInteger
 
 
 /**
@@ -74,7 +76,7 @@ class TestController {
 
     @RequestMapping("/loadWalletxx")
     fun loadWalletxx(): Credentials? {
-        val walleFilePath = "./UTC--2018-07-19T03-46-04.460000000Z--6194ab1ec4a1e67df89537ed913fc014e538b303--xx.json"
+        val walleFilePath = "./UTC--2018-07-28T07-28-15.556000000Z--4463be57a8ec36540e4a9219655d6d290e7f22fc--xx.json"
         val passWord = "123456"
         val credentials = WalletUtils.loadCredentials(passWord, walleFilePath)
         val address = credentials.getAddress()
@@ -118,7 +120,7 @@ class TestController {
      */
     @RequestMapping("/transto")
     fun transto() {
-        val address_to = "0x41F1dcbC0794BAD5e94c6881E7c04e4F98908a87"
+        val address_to = "0xd8b236a18d274363c78c297cb23da33d11015e90"
         val send = Transfer.sendFunds(web3j, loadWalletxx(), address_to, BigDecimal.ONE, Convert.Unit.FINNEY)
                 .send()
 
@@ -137,13 +139,13 @@ class TestController {
     @RequestMapping("/transto2")
     fun testTransto() {
         val ethGetTransactionCount = web3j.ethGetTransactionCount(
-                "0x6194ab1ec4a1e67df89537ed913fc014e538b303", DefaultBlockParameterName.LATEST).sendAsync().get()
+                "0x4463be57a8ec36540e4a9219655d6d290e7f22fc", DefaultBlockParameterName.LATEST).sendAsync().get()
         val nonce = ethGetTransactionCount.transactionCount
 
         val rawTransaction = RawTransaction.createTransaction(nonce, Contract.GAS_PRICE, Contract.GAS_LIMIT,
-                "0x06Eb0870C6957A2bD3b7FDEdb87d919eEE32BD2c",
-                10000.toBigInteger(),
-                "0x7b2074696d653a20313531383933313435323537372c20747970653a2027696e666f272c206d73673a202757656233205465737421212127207d20")
+                "0xd8b236a18d274363c78c297cb23da33d11015e90",
+                BigInteger.valueOf(10000),
+                "0x7b226e756d626572223a352c226e616d65223a227a68616e6773616e222c22736578223a302c226269727468223a22323031352d30312d3031222c22696443617264223a3431303130313139393930313031313132322c227363686f6f6c223a22e4b88ae6b5b7e4baa4e5a4a7222c22636f6c6c656765223a22e8aea1e7ae97e69cbae5ada6e999a2222c22706572696f64223a2232303131222c2263726561746554696d65223a224a756c2032382c203230313820383a35303a323120414d222c22737461747573223a312c226a796a5f737461747573223a302c2277616c6c657441646472657373223a225554432d2d323031382d30372d32385430382d35302d32312e3136323030303030305a2d2d643862323336613138643237343336336337386332393763623233646133336431313031356539302e6a736f6e227d")
         val signedMessage = TransactionEncoder.signMessage(rawTransaction, loadWalletxx())
         val hexValue = Numeric.toHexString(signedMessage)
         val send = web3j.ethSendRawTransaction(hexValue).send()
@@ -165,9 +167,9 @@ class TestController {
         val contract = Certificate_sol_Certificate.load(contractAddress, web3j, loadWalletjyj(), Contract.GAS_PRICE, Contract.GAS_LIMIT)
         log.info { contract.isValid }
 //        val set = contract.set(Uint256(100)).send()
-//        val set = contract.mint(Address("0x6194Ab1ec4A1E67dF89537ed913fc014e538b303"), Uint256(20010)).send()
-        val get = contract.record(Uint256(20010)).send()
-        log.info { get }
+        val set = contract.mint(Address("0x6194Ab1ec4A1E67dF89537ed913fc014e538b303"), Uint256(20010)).send()
+//        val get = contract.record(Uint256(20010)).send()
+        log.info { set }
     }
 
     @RequestMapping("/transactions")

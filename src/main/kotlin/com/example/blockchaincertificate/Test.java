@@ -1,15 +1,14 @@
 package com.example.blockchaincertificate;
 
+import com.example.blockchaincertificate.utils.HexUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.NewAccountIdentifier;
 import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.Transfer;
-import org.web3j.utils.Convert;
 
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.io.UnsupportedEncodingException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,8 +22,8 @@ public class Test {
     @Autowired
     private Admin admin;
 
-    public static void main(String[] args) {
-        new Test().test();
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        System.out.println(HexUtils.strToHex("{ time: 1518931452577, type: 'info', msg: 'Web3 Test!!!' } "));
     }
 
     private void test() {
