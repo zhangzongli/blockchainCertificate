@@ -24,6 +24,7 @@ public class Student {
     private Long idCard;
     private String school;
     private String college;
+    private String profession;
     private String period;
     private Timestamp createTime;
     private Integer status; //0未审核 1审核通过 2审核拒jue -1 召回
@@ -143,6 +144,14 @@ public class Student {
 
     public void setRollback(boolean rollback) {
         isRollback = rollback;
+    }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
     }
 }
 
