@@ -21,7 +21,7 @@ public class Student {
     private String name;
     private Integer sex;
     private String birth;
-    private Long idCard;
+    private String id_card;
     private String school;
     private String college;
     private String profession;
@@ -66,12 +66,12 @@ public class Student {
         this.birth = birth;
     }
 
-    public Long getIdCard() {
-        return idCard;
+    public String getId_card() {
+        return id_card;
     }
 
-    public void setIdCard(Long idCard) {
-        this.idCard = idCard;
+    public void setId_card(String id_card) {
+        this.id_card = id_card;
     }
 
     public String getSchool() {

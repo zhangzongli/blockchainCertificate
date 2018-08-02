@@ -47,11 +47,12 @@ public class MainController {
 
 
     @RequestMapping("/create_wallet")
-    public fun createWallet(student: Student) {
+    public fun createWallet(student: Student): Long? {
         student.status = 0
         student.jyj_status = 0
         student.walletAddress = account()
         studentMapper.insert(student)
+        return student.number
     }
 
 
@@ -60,6 +61,13 @@ public class MainController {
 //        val example = Example(Student::class.java)
 //        example.createCriteria().andEqualTo("status",status)
         return studentMapper.findByStatus(status)
+    }
+
+    @RequestMapping("/getJyjList")
+    public fun getJyjList(status: Int): List<Student> {
+//        val example = Example(Student::class.java)
+//        example.createCriteria().andEqualTo("status",status)
+        return studentMapper.findByJyjStatus(status)
     }
 
     /**
@@ -141,6 +149,18 @@ public class MainController {
         val response = etherscanService.getTransactionsByAddress(address).execute()
         log.info { response.body() }
         return response.body()?.result?.last()
+    }
+
+    /**
+     * 获取学位信息
+     */
+    @RequestMapping("/getTransactionsByNumber")
+    fun getTransactionsByNumber(number: Long): String? {
+        val address = getStudentAddress(number)
+        val response = etherscanService.getTransactionsByAddress(address).execute()
+        log.info { response.body() }
+        val input = response.body()?.result?.last()?.input
+        return HexUtils.hexStringToString(input?.replace("0x", ""))
     }
 
 
