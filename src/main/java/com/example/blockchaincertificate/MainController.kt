@@ -20,6 +20,9 @@ import org.web3j.tx.Contract
 import org.web3j.utils.Numeric
 import java.io.File
 import java.math.BigInteger
+import org.springframework.core.io.ClassPathResource
+
+
 
 /**
  * Created by guo on 2018/7/26.
@@ -193,7 +196,8 @@ public class MainController {
 
 
     private fun loadWalletxx(): Credentials? {
-        val walleFilePath = "./UTC--2018-07-28T07-28-15.556000000Z--4463be57a8ec36540e4a9219655d6d290e7f22fc--xx.json"
+        val resource = ClassPathResource("/static/UTC--2018-07-28T07-28-15.556000000Z--4463be57a8ec36540e4a9219655d6d290e7f22fc--xx.json")
+        val walleFilePath = resource.file
         val passWord = "123456"
         val credentials = WalletUtils.loadCredentials(passWord, walleFilePath)
         val address = credentials.getAddress()
@@ -207,7 +211,8 @@ public class MainController {
 
 
     private fun loadWalletjyj(): Credentials? {
-        val walleFilePath = "./UTC--2018-07-19T03-46-04.460000000Z--6194ab1ec4a1e67df89537ed913fc014e538b303--jyj.json"
+        val resource = ClassPathResource("/static/UTC--2018-07-19T03-46-04.460000000Z--6194ab1ec4a1e67df89537ed913fc014e538b303--jyj.json")
+        val walleFilePath = resource.file
         val passWord = "123456"
         val credentials = WalletUtils.loadCredentials(passWord, walleFilePath)
         val address = credentials.getAddress()
