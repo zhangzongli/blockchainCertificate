@@ -64,10 +64,10 @@ public class MainController {
     }
 
     @RequestMapping("/getJyjList")
-    public fun getJyjList(status: Int): List<Student> {
+    public fun getJyjList(status: Int, jyj_status: Int): List<Student> {
 //        val example = Example(Student::class.java)
 //        example.createCriteria().andEqualTo("status",status)
-        return studentMapper.findByJyjStatus(status)
+        return studentMapper.findByJyjStatus(status,jyj_status)
     }
 
     /**

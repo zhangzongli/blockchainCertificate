@@ -1,6 +1,7 @@
 package com.example.blockchaincertificate.mapper
 
 import com.example.blockchaincertificate.Student
+import org.apache.ibatis.annotations.Param
 import org.apache.ibatis.annotations.Select
 import tk.mybatis.mapper.common.Mapper
 
@@ -15,6 +16,7 @@ interface StudentMapper : Mapper<Student> {
     fun findByStatus(status: Int): List<Student>
 
 
-    @Select("SELECT * FROM student WHERE status = 1 AND jyj_status = #{jyjStatus}")
-    fun findByJyjStatus(jyjStatus: Int): List<Student>
+    @Select("SELECT * FROM student WHERE status = #{status} AND jyj_status = #{jyjStatus}")
+    fun findByJyjStatus(@Param("status") status: Int
+                        , @Param("jyjStatus") jyjStatus: Int): List<Student>
 }
