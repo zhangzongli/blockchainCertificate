@@ -4,6 +4,8 @@ import com.example.blockchaincertificate.mapper.StudentMapper
 import com.example.blockchaincertificate.utils.HexUtils
 import com.google.gson.Gson
 import mu.KotlinLogging
+import org.apache.tomcat.util.http.fileupload.FileUtils
+import org.hsqldb.lib.FileUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -21,7 +23,10 @@ import org.web3j.utils.Numeric
 import java.io.File
 import java.math.BigInteger
 import org.springframework.core.io.ClassPathResource
-
+import org.springframework.util.FileCopyUtils
+import java.io.FileOutputStream
+import java.io.InputStream
+import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf
 
 
 /**
@@ -196,8 +201,10 @@ public class MainController {
 
 
     private fun loadWalletxx(): Credentials? {
-        val resource = ClassPathResource("/static/UTC--2018-07-28T07-28-15.556000000Z--4463be57a8ec36540e4a9219655d6d290e7f22fc--xx.json")
-        val walleFilePath = resource.file
+        val input = ClassPathResource("/static/UTC--2018-07-28T07-28-15.556000000Z--4463be57a8ec36540e4a9219655d6d290e7f22fc--xx.json").inputStream
+        val file = File("utc-20180728")
+        org.apache.commons.io.FileUtils.copyInputStreamToFile(input, file)
+        val walleFilePath = file
         val passWord = "123456"
         val credentials = WalletUtils.loadCredentials(passWord, walleFilePath)
         val address = credentials.getAddress()
@@ -211,8 +218,10 @@ public class MainController {
 
 
     private fun loadWalletjyj(): Credentials? {
-        val resource = ClassPathResource("/static/UTC--2018-07-19T03-46-04.460000000Z--6194ab1ec4a1e67df89537ed913fc014e538b303--jyj.json")
-        val walleFilePath = resource.file
+        val input = ClassPathResource("/static/UTC--2018-07-19T03-46-04.460000000Z--6194ab1ec4a1e67df89537ed913fc014e538b303--jyj.json").inputStream
+        val file = File("utc-20180719")
+        org.apache.commons.io.FileUtils.copyInputStreamToFile(input, file)
+        val walleFilePath = file
         val passWord = "123456"
         val credentials = WalletUtils.loadCredentials(passWord, walleFilePath)
         val address = credentials.getAddress()
@@ -223,6 +232,7 @@ public class MainController {
         log.info("private key=" + privateKey)
         return credentials
     }
+
 
     /**
      * 写入智能合约
